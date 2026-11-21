@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECH50 — Dyqani Juaj i Teknologjisë</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            amber: '#F59E0B',
+                            amberBright: '#FBBF24',
+                            amberHover: '#D97706',
+                            red: '#EF4444',
+                            dark: '#090D16',
+                            darker: '#05080F',
+                            surface: '#111827',
+                            surfaceLight: '#1E293B',
+                            page: '#0B0F1A',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Stilizime të personalizuara, hije, tekstura dhe tranzicione të buta */
+        body {
+            background-color: #0B0F1A;
+            color: #F8FAFC;
+            overflow-x: hidden;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        @keyframes amberPulse {
+            0%, 100% {
+                border-color: rgba(245, 158, 11, 0.35);
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.12);
+            }
+            50% {
+                border-color: rgba(251, 191, 36, 0.85);
+                box-shadow: 0 0 24px -4px rgba(245, 158, 11, 0.22);
+            }
+        }
+        .flash-deal-glow {
+            animation: amberPulse 2.4s infinite ease-in-out;
+        }
+        .product-card:hover .studio-photo {
+            transform: scale(1.045);
+        }
+        .studio-photo-box {
+            background: radial-gradient(circle at 50% 24%, #1E293B 0%, #0F172A 62%, #070A12 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .studio-photo-box::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(125deg, rgba(255,255,255,0.06) 0%, transparent 45%, rgba(245,158,11,0.04) 100%);
+            pointer-events: none;
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.88);
+            backdrop-filter: blur(14px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-amber-400 selection:text-gray-950">
+
+    <!-- 1. SHIRITI I NJOFTIMEVE NË KRYE -->
+    <div class="bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-gray-950 text-xs sm:text-sm font-bold py-2 px-4">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-truck-fast"></i>
+                <span>Transport falas në të gjithë Kosovën për porosi mbi <strong>€50</strong>!</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-extrabold">
+                <span class="hidden md:inline-flex items-center gap-1 bg-gray-950/10 px-2.5 py-0.5 rounded-full">
+                    <i class="fa-solid fa-tag"></i> Kodi: <strong>KOSOVA10</strong> (-10%)
+                </span>
+                <span class="inline-flex items-center gap-1">
+                    <i class="fa-solid fa-shield-check"></i> Garancion zyrtar deri 24 muaj
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER KRYESOR & KËRKIMI I DREJTPËRDREJTË -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-white/10 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-3 lg:gap-6">
+            <!-- Logoja TECH50 në stilin Gjirafa50 -->
+            <a href="#" onclick="resetAllFilters(); return false;" class="flex items-center gap-2.5 shrink-0 group">
+                <div class="bg-amber-400 text-gray-950 font-black text-xl sm:text-2xl px-3 py-1 rounded-xl shadow-lg shadow-amber-500/25 tracking-tighter flex items-center gap-1 group-hover:bg-amber-300 transition">
+                    <span>TECH</span>
+                    <span class="bg-gray-950 text-amber-400 px-1.5 py-0.2 rounded-md text-lg sm:text-xl">50</span>
+                </div>
+                <div class="hidden xl:block leading-tight">
+                    <div class="text-xs font-extrabold text-white tracking-wide">ELEKTRONIKË &amp; TECH</div>
+                    <div class="text-[11px] text-amber-400/90 font-medium">Shpejtësi • Cilësi • Besim</div>
+                </div>
+            </a>
+
+            <!-- Shiriti i Kërkimit me Filtrimin e Kategorisë -->
+            <div class="flex-1 max-w-2xl">
+                <div class="flex items-stretch bg-gray-950 border border-white/15 focus-within:border-amber-400 rounded-xl overflow-hidden shadow-inner transition">
+                    <select id="searchCategorySelect" aria-label="Zgjidh kategorinë për kërkim" onchange="handleLiveSearch()" class="hidden sm:block bg-gray-900 text-gray-200 text-xs font-semibold px-3 border-r border-white/10 focus:outline-none cursor-pointer">
+                        <option value="Të gjitha">Të gjitha</option>
+                        <option value="Laptopë">Laptopë</option>
+                        <option value="Telefona">Telefona</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="PC & Komponentë">PC &amp; Komponentë</option>
+                        <option value="Audio">Audio</option>
+                        <option value="TV & Foto">TV &amp; Foto</option>
+                        <option value="Smart & Aksesorë">Smart &amp; Aksesorë</option>
+                    </select>
+                    <input
+                        id="liveSearchInput"
+                        type="text"
+                        oninput="handleLiveSearch()"
+                        placeholder="Kërko laptop, iPhone, RTX, PS5, monitor..."
+                        class="w-full bg-transparent text-white placeholder-gray-400 text-sm px-3.5 py-2.5 focus:outline-none"
+                    >
+                    <button id="clearSearchBtn" onclick="clearSearch()" title="Pastro kërkimin" class="hidden px-2.5 text-gray-400 hover:text-white transition">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <button onclick="handleLiveSearch(); scrollToCatalog();" class="bg-amber-400 hover:bg-amber-300 text-gray-950 font-bold px-4 flex items-center justify-center transition">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Butonat e të Preferuarave & Shportës -->
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                <button onclick="toggleWishlistFilter()" id="wishlistNavBtn" class="relative flex items-center gap-2 bg-gray-900 hover:bg-gray-800 border border-white/10 text-gray-200 px-3 py-2.5 rounded-xl text-xs font-bold transition">
+                    <i class="fa-solid fa-heart text-rose-400"></i>
+                    <span class="hidden md:inline">Të preferuarat</span>
+                    <span id="wishlistBadge" class="bg-rose-500/20 text-rose-300 border border-rose-500/30 px-1.5 py-0.5 rounded-md text-[11px]">0</span>
+                </button>
+
+                <button onclick="openCart()" class="relative flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-gray-950 font-extrabold px-3.5 py-2.5 rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition transform active:scale-95">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="hidden sm:inline">Shporta</span>
+                    <span id="cartCountBadge" class="bg-gray-950 text-amber-400 font-black px-2 py-0.5 rounded-lg text-xs">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menyja Horizontale me 8 Kategoritë Kryesore -->
+        <nav aria-label="Kategoritë kryesore" class="border-t border-white/10 bg-gray-950/75">
+            <div class="max-w-7xl mx-auto px-4 flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-2">
+                <button onclick="selectCategory('Të gjitha')" data-cat="Të gjitha" class="cat-nav-btn active-cat shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition bg-amber-400 text-gray-950">
+                    Të gjitha
+                </button>
+                <button onclick="selectCategory('Laptopë')" data-cat="Laptopë" class="cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-gray-300 hover:text-amber-400 hover:bg-white/5 transition">
+                    Laptopë
+                </button>
+                <button onclick="selectCategory('Telefona')" data-cat="Telefona" class="cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-gray-300 hover:text-amber-400 hover:bg-white/5 transition">
+                    Telefona
+                </button>
+                <button onclick="selectCategory('Gaming')" data-cat="Gaming" class="cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-gray-300 hover:text-amber-400 hover:bg-white/5 transition">
+                    Gaming
+                </button>
+                <button onclick="selectCategory('PC & Komponentë')" data-cat="PC & Komponentë" class="cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-gray-300 hover:text-amber-400 hover:bg-white/5 transition">
+                    PC &amp; Komponentë
+                </button>
+                <button onclick="selectCategory('Audio')" data-cat="Audio" class="cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-gray-300 hover:text-amber-400 hover:bg-white/5 transition">
+                    Audio
+                </button>
+                <button onclick="selectCategory('TV & Foto')" data-cat="TV & Foto" class="cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-gray-300 hover:text-amber-400 hover:bg-white/5 transition">
+                    TV &amp; Foto
+                </button>
+                <button onclick="selectCategory('Smart & Aksesorë')" data-cat="Smart & Aksesorë" class="cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-gray-300 hover:text-amber-400 hover:bg-white/5 transition">
+                    Smart &amp; Aksesorë
+                </button>
+                <button onclick="selectCategory('Zbritje')" data-cat="Zbritje" class="cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-extrabold text-amber-400 bg-amber-400/10 border border-amber-400/30 hover:bg-amber-400/20 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-fire text-amber-400"></i> Zbritje
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- NJOFTIM FLOATING (TOAST) -->
+    <div id="toastBanner" class="fixed bottom-5 right-5 z-50 hidden max-w-sm bg-gray-900 border border-amber-400/60 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transition-all">
+        <div class="w-8 h-8 rounded-xl bg-amber-400/15 text-amber-400 flex items-center justify-center shrink-0">
+            <i id="toastIcon" class="fa-solid fa-check"></i>
+        </div>
+        <p id="toastMessage" class="text-xs sm:text-sm font-semibold"></p>
+    </div>
+
+    <!-- PËRMBAJTJA KRYESORE -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-10">
+
+        <!-- 2. SEKSIONI HERO: BANERI KRYESOR INTERAKTIV + 2 KARTA PROMOVUESE -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <!-- Baneri Kryesor Interaktiv (8 kolona) -->
+            <div class="lg:col-span-8 relative rounded-3xl overflow-hidden border border-white/10 bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950 shadow-2xl min-h-[340px] sm:min-h-[380px] flex flex-col justify-between">
+                <!-- Sllajdi 1: Gaming & Laptopë -->
+                <div id="heroSlide0" class="hero-slide p-6 sm:p-9 flex flex-col md:flex-row items-center justify-between gap-6 my-auto">
+                    <div class="space-y-3.5 max-w-lg z-10 text-center md:text-left">
+                        <div class="inline-flex items-center gap-2 bg-amber-400/15 border border-amber-400/40 text-amber-300 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider">
+                            <i class="fa-solid fa-bolt"></i> Oferta e Javës • Gaming &amp; Pro
+                        </div>
+                        <h1 class="text-2xl sm:text-4xl xl:text-5xl font-black tracking-tight text-white leading-[1.1]">
+                            Fuqi maksimale për <span class="text-amber-400">Gaming &amp; Krijim</span>
+                        </h1>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Laptopë me grafikë RTX, ekrane 240Hz dhe shasi alumini të lëmuar me zbritje deri në <strong class="text-amber-400">22%</strong> dhe garancion 24 muaj.
+                        </p>
+                        <div class="pt-1 flex flex-wrap items-center justify-center md:justify-start gap-3">
+                            <button onclick="selectCategory('Gaming'); scrollToCatalog();" class="bg-amber-400 hover:bg-amber-300 text-gray-950 font-black px-5 py-3 rounded-xl text-sm shadow-lg shadow-amber-500/25 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                                <span>Shiko Ofertat Gaming</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                            <button onclick="openQuickView(1)" class="bg-white/10 hover:bg-white/15 border border-white/15 text-white font-bold px-4 py-3 rounded-xl text-sm transition">
+                                Detajet e Laptopit
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Skenë Reale Studioje: Gaming Laptop -->
+                    <div class="w-56 sm:w-64 shrink-0 z-10">
+                        <svg viewBox="0 0 320 220" class="w-full h-auto rounded-2xl shadow-2xl border border-white/10">
+                            <defs>
+                                <linearGradient id="heroDesk1" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#1E293B"/>
+                                    <stop offset="100%" stop-color="#06080E"/>
+                                </linearGradient>
+                                <radialGradient id="heroAmberPool" cx="52%" cy="68%" r="48%">
+                                    <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.38"/>
+                                    <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+                                </radialGradient>
+                                <linearGradient id="heroScreen1" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#0F172A"/>
+                                    <stop offset="55%" stop-color="#78350F"/>
+                                    <stop offset="100%" stop-color="#F59E0B"/>
+                                </linearGradient>
+                                <linearGradient id="heroMetal1" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#CBD5E1"/>
+                                    <stop offset="45%" stop-color="#475569"/>
+                                    <stop offset="100%" stop-color="#0F172A"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="320" height="220" fill="url(#heroDesk1)"/>
+                            <rect y="146" width="320" height="74" fill="#05070C"/>
+                            <ellipse cx="160" cy="162" rx="125" ry="24" fill="url(#heroAmberPool)"/>
+                            <rect x="36" y="166" width="248" height="2.5" rx="1.25" fill="#FBBF24" opacity="0.75"/>
+                            <!-- Laptop Lid -->
+                            <rect x="66" y="22" width="188" height="118" rx="7" fill="#1E293B" stroke="#64748B" stroke-width="1.2"/>
+                            <rect x="73" y="29" width="174" height="104" rx="3" fill="url(#heroScreen1)"/>
+                            <polygon points="73,29 146,29 98,133 73,133" fill="#FFFFFF" opacity="0.08"/>
+                            <!-- Screen Graphics -->
+                            <circle cx="204" cy="68" r="22" fill="#FDE68A" opacity="0.22"/>
+                            <polygon points="204,52 219,78 189,78" fill="none" stroke="#FBBF24" stroke-width="2.2"/>
+                            <rect x="86" y="106" width="64" height="4" rx="2" fill="#FEF3C7" opacity="0.85"/>
+                            <rect x="86" y="114" width="40" height="3" rx="1.5" fill="#FBBF24" opacity="0.55"/>
+                            <!-- Aluminum Base -->
+                            <path d="M66 140 L254 140 L282 158 C284 160 282 163 278 163 L42 163 C38 163 36 160 38 158 Z" fill="url(#heroMetal1)"/>
+                            <path d="M80 143 L240 143 L250 151 L70 151 Z" fill="#090D16"/>
+                            <rect x="102" y="146.5" width="8" height="2" rx="0.5" fill="#F59E0B"/>
+                            <rect x="113" y="146.5" width="8" height="2" rx="0.5" fill="#F59E0B"/>
+                            <rect x="124" y="146.5" width="8" height="2" rx="0.5" fill="#F59E0B"/>
+                            <rect x="135" y="146.5" width="8" height="2" rx="0.5" fill="#F59E0B"/>
+                            <rect x="138" y="153" width="44" height="7" rx="1.5" fill="#1E293B" stroke="#64748B" stroke-width="0.6"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Sllajdi 2: Apple Ecosystem -->
+                <div id="heroSlide1" class="hero-slide hidden p-6 sm:p-9 flex flex-col md:flex-row items-center justify-between gap-6 my-auto">
+                    <div class="space-y-3.5 max-w-lg z-10 text-center md:text-left">
+                        <div class="inline-flex items-center gap-2 bg-amber-400/15 border border-amber-400/40 text-amber-300 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider">
+                            <i class="fa-brands fa-apple"></i> Ekosistemi Apple
+                        </div>
+                        <h2 class="text-2xl sm:text-4xl xl:text-5xl font-black tracking-tight text-white leading-[1.1]">
+                            iPhone 16 Pro &amp; <span class="text-amber-400">MacBook Air M3</span>
+                        </h2>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Kornizë titani, ekran Super Retina XDR dhe autonomi baterisë deri në 18 orë. Porosit online me dërgesë të shpejtë në Kosovë.
+                        </p>
+                        <div class="pt-1 flex flex-wrap items-center justify-center md:justify-start gap-3">
+                            <button onclick="selectCategory('Telefona'); scrollToCatalog();" class="bg-amber-400 hover:bg-amber-300 text-gray-950 font-black px-5 py-3 rounded-xl text-sm shadow-lg shadow-amber-500/25 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                                <span>Zbulo Telefona &amp; Apple</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                            <button onclick="openQuickView(2)" class="bg-white/10 hover:bg-white/15 border border-white/15 text-white font-bold px-4 py-3 rounded-xl text-sm transition">
+                                Shiko iPhone 16 Pro
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Skenë Reale Studioje: Titanium Smartphone -->
+                    <div class="w-56 sm:w-64 shrink-0 z-10">
+                        <svg viewBox="0 0 320 220" class="w-full h-auto rounded-2xl shadow-2xl border border-white/10">
+                            <defs>
+                                <linearGradient id="appleBg2" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#1F2937"/>
+                                    <stop offset="100%" stop-color="#06080E"/>
+                                </linearGradient>
+                                <linearGradient id="tiFrame2" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#E7E5E4"/>
+                                    <stop offset="50%" stop-color="#78716C"/>
+                                    <stop offset="100%" stop-color="#292524"/>
+                                </linearGradient>
+                                <linearGradient id="phWall2" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#0F172A"/>
+                                    <stop offset="55%" stop-color="#78350F"/>
+                                    <stop offset="100%" stop-color="#F59E0B"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="320" height="220" fill="url(#appleBg2)"/>
+                            <ellipse cx="160" cy="192" rx="74" ry="12" fill="#000000" opacity="0.65"/>
+                            <circle cx="160" cy="108" r="72" fill="#F59E0B" opacity="0.14"/>
+                            <rect x="118" y="18" width="84" height="170" rx="16" fill="url(#tiFrame2)" stroke="#F5F5F4" stroke-width="1.2"/>
+                            <rect x="121.5" y="21.5" width="77" height="163" rx="13" fill="url(#phWall2)"/>
+                            <rect x="146" y="27" width="28" height="7" rx="3.5" fill="#090A0F"/>
+                            <circle cx="168" cy="30.5" r="2" fill="#38BDF8"/>
+                            <polygon points="121.5,21.5 166,21.5 130,184.5 121.5,184.5" fill="#FFFFFF" opacity="0.09"/>
+                            <rect x="143" y="176" width="34" height="2.5" rx="1.25" fill="#FFFFFF" opacity="0.8"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Kontrollet e Sllajderit Hero -->
+                <div class="px-6 sm:px-9 pb-4 flex items-center justify-between z-20">
+                    <div class="flex items-center gap-2">
+                        <button onclick="setHeroSlide(0)" id="heroDot0" class="w-7 h-2 rounded-full bg-amber-400 transition-all"></button>
+                        <button onclick="setHeroSlide(1)" id="heroDot1" class="w-2.5 h-2 rounded-full bg-white/30 hover:bg-white/60 transition-all"></button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="prevHeroSlide()" aria-label="Sllajdi i mëparshëm" class="w-8 h-8 rounded-full bg-white/10 hover:bg-amber-400 hover:text-gray-950 text-white flex items-center justify-center text-xs transition">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button onclick="nextHeroSlide()" aria-label="Sllajdi i radhës" class="w-8 h-8 rounded-full bg-white/10 hover:bg-amber-400 hover:text-gray-950 text-white flex items-center justify-center text-xs transition">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dy Karta Promovuese Anësore (4 kolona) -->
+            <div class="lg:col-span-4 flex flex-col gap-5">
+                <!-- Karta 1: PlayStation 5 Slim -->
+                <div onclick="openQuickView(3)" class="cursor-pointer flex-1 bg-gradient-to-br from-gray-900 via-slate-900 to-gray-950 rounded-3xl p-4 sm:p-5 border border-white/10 hover:border-amber-400/70 transition flex items-center justify-between gap-4 shadow-xl group">
+                    <div class="space-y-1.5">
+                        <span class="inline-block bg-amber-400/15 text-amber-300 border border-amber-400/30 text-[11px] font-extrabold px-2.5 py-0.5 rounded-md uppercase">
+                            Konzola Next-Gen
+                        </span>
+                        <h3 class="font-black text-white text-lg leading-snug group-hover:text-amber-400 transition">
+                            PlayStation 5 Slim 1TB
+                        </h3>
+                        <p class="text-xs text-gray-400">DualSense wireless &amp; SSD ultra-shpejtë</p>
+                        <div class="pt-1 flex items-baseline gap-2">
+                            <span class="text-xl font-black text-amber-400">€489.00</span>
+                            <span class="text-xs text-gray-500 line-through">€549.00</span>
+                        </div>
+                    </div>
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 border border-white/10 bg-slate-950">
+                        <svg viewBox="0 0 140 140" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <defs>
+                                <linearGradient id="ps5PromoBg" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#1E293B"/>
+                                    <stop offset="100%" stop-color="#06080E"/>
+                                </linearGradient>
+                                <linearGradient id="ps5ShellGrad" x1="0" y1="0" x2="1" y2="0">
+                                    <stop offset="0%" stop-color="#FFFFFF"/>
+                                    <stop offset="75%" stop-color="#E2E8F0"/>
+                                    <stop offset="100%" stop-color="#94A3B8"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="140" height="140" fill="url(#ps5PromoBg)"/>
+                            <ellipse cx="70" cy="124" rx="34" ry="6" fill="#000000" opacity="0.65"/>
+                            <path d="M46 18 C64 14 78 18 82 26 L76 118 L44 114 Z" fill="url(#ps5ShellGrad)"/>
+                            <path d="M58 18 C68 16 76 19 79 25 L75 117 L56 115 Z" fill="#0F172A"/>
+                            <line x1="60" y1="26" x2="60" y2="96" stroke="#FBBF24" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M68 92 C62 92 56 106 58 118 C60 124 66 122 70 114 L96 114 C100 122 106 124 108 118 C110 106 104 92 98 92 Z" fill="#F8FAFC" stroke="#94A3B8" stroke-width="0.8"/>
+                            <circle cx="96" cy="102" r="2.2" fill="#38BDF8"/>
+                            <circle cx="101" cy="106" r="2.2" fill="#F43F5E"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Karta 2: GPU Upgrade RTX 4080 Super -->
+                <div onclick="openQuickView(5)" class="cursor-pointer flex-1 bg-gradient-to-br from-gray-900 via-slate-900 to-gray-950 rounded-3xl p-4 sm:p-5 border border-white/10 hover:border-amber-400/70 transition flex items-center justify-between gap-4 shadow-xl group">
+                    <div class="space-y-1.5">
+                        <span class="inline-block bg-amber-400 text-gray-950 text-[11px] font-black px-2.5 py-0.5 rounded-md uppercase">
+                            -18% Upgrade GPU
+                        </span>
+                        <h3 class="font-black text-white text-lg leading-snug group-hover:text-amber-400 transition">
+                            RTX 4080 Super 16GB
+                        </h3>
+                        <p class="text-xs text-gray-400">Ray Tracing &amp; DLSS 3.5 • 3x Ventilatorë</p>
+                        <div class="pt-1 flex items-baseline gap-2">
+                            <span class="text-xl font-black text-amber-400">€1,099.00</span>
+                            <span class="text-xs text-gray-500 line-through">€1,340.00</span>
+                        </div>
+                    </div>
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0 border border-white/10 bg-slate-950">
+                        <svg viewBox="0 0 140 140" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <defs>
+                                <linearGradient id="gpuPromoBg" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#1E293B"/>
+                                    <stop offset="100%" stop-color="#05080F"/>
+                                </linearGradient>
+                                <linearGradient id="gpuPromoShroud" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#64748B"/>
+                                    <stop offset="50%" stop-color="#1E293B"/>
+                                    <stop offset="100%" stop-color="#090D16"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="140" height="140" fill="url(#gpuPromoBg)"/>
+                            <ellipse cx="70" cy="112" rx="48" ry="10" fill="#000000" opacity="0.65"/>
+                            <rect x="14" y="42" width="8" height="52" rx="1.5" fill="#94A3B8"/>
+                            <rect x="22" y="46" width="104" height="44" rx="5" fill="url(#gpuPromoShroud)" stroke="#64748B" stroke-width="1"/>
+                            <rect x="28" y="48" width="92" height="2" rx="1" fill="#FBBF24"/>
+                            <circle cx="44" cy="69" r="14" fill="#090D16" stroke="#334155" stroke-width="1.5"/>
+                            <circle cx="44" cy="69" r="5" fill="#475569"/>
+                            <circle cx="74" cy="69" r="14" fill="#090D16" stroke="#334155" stroke-width="1.5"/>
+                            <circle cx="74" cy="69" r="5" fill="#475569"/>
+                            <circle cx="104" cy="69" r="14" fill="#090D16" stroke="#334155" stroke-width="1.5"/>
+                            <circle cx="104" cy="69" r="5" fill="#475569"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SEKSIONI OFERTAT E DITËS (FLASH DEALS) -->
+        <section class="bg-gray-900/90 border-2 flash-deal-glow rounded-3xl p-5 sm:p-6 shadow-2xl">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-amber-400 text-gray-950 flex items-center justify-center text-xl font-black shadow-lg shadow-amber-500/20">
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">Ofertat e Ditës</h2>
+                            <span class="bg-amber-400/15 text-amber-300 border border-amber-400/30 text-[11px] font-extrabold px-2 py-0.5 rounded-full uppercase">
+                                Sasi e kufizuar
+                            </span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-400">Çmime promocionale që mbyllen me skadimin e kohëmatësit</p>
+                    </div>
+                </div>
+
+                <!-- Kohëmatësi Aktiv -->
+                <div class="flex items-center gap-2 bg-gray-950 border border-amber-400/30 px-3.5 py-2 rounded-2xl self-start sm:self-auto">
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider mr-1">
+                        <i class="fa-regular fa-clock"></i> Mbetur:
+                    </span>
+                    <div class="flex items-center gap-1.5 font-mono font-black text-sm text-white">
+                        <span id="timerHours" class="bg-gray-900 border border-white/10 px-2 py-1 rounded-lg text-amber-400">05</span>
+                        <span class="text-amber-400">:</span>
+                        <span id="timerMinutes" class="bg-gray-900 border border-white/10 px-2 py-1 rounded-lg text-amber-400">42</span>
+                        <span class="text-amber-400">:</span>
+                        <span id="timerSeconds" class="bg-gray-900 border border-white/10 px-2 py-1 rounded-lg text-amber-400">19</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kartat e Ofertave të Ditës -->
+            <div id="flashDealsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-5"></div>
+        </section>
+
+        <!-- 4. KATALOGU I PRODUKTEVE, FILTRIMI & RENDITJA -->
+        <section id="catalogSection" class="space-y-5 pt-2">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-900/70 border border-white/10 rounded-2xl p-4">
+                <div>
+                    <div class="flex items-center gap-2.5">
+                        <h2 id="catalogHeading" class="text-xl sm:text-2xl font-black text-white">Të gjitha produktet</h2>
+                        <span id="catalogCountBadge" class="bg-amber-400 text-gray-950 text-xs font-black px-2.5 py-0.5 rounded-full">0</span>
+                    </div>
+                    <p id="catalogSubheading" class="text-xs sm:text-sm text-gray-400 mt-0.5">Përzgjedhje e kuruar pajisjesh me cilësi të lartë dhe garancion zyrtar.</p>
+                </div>
+
+                <!-- Kontrollet e Renditjes & Rivendosjes -->
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <label for="sortSelect" class="text-xs font-bold text-gray-400">Rendit sipas:</label>
+                    <select id="sortSelect" onchange="renderCatalog()" class="bg-gray-950 text-white text-xs sm:text-sm font-semibold border border-white/15 focus:border-amber-400 rounded-xl px-3 py-2 focus:outline-none cursor-pointer">
+                        <option value="featured">Të rekomanduara</option>
+                        <option value="price-asc">Çmimi: Nga më i ulëti</option>
+                        <option value="price-desc">Çmimi: Nga më i larti</option>
+                        <option value="discount-desc">Zbritja më e madhe (%)</option>
+                    </select>
+                    <button onclick="resetAllFilters()" class="bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-amber-400 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>Rivendos</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Rrjeta e Katalogut -->
+            <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+
+            <!-- Gjendja bosh kur nuk ka rezultate -->
+            <div id="emptyCatalogState" class="hidden bg-gray-900/70 border border-white/10 rounded-3xl p-10 text-center space-y-3">
+                <div class="w-14 h-14 rounded-2xl bg-amber-400/10 text-amber-400 flex items-center justify-center text-2xl mx-auto">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+                <h3 class="text-lg font-extrabold text-white">Nuk u gjet asnjë produkt</h3>
+                <p class="text-sm text-gray-400 max-w-md mx-auto">Provo të ndryshosh fjalën kyçe të kërkimit ose të rivendosësh filtrat e kategorisë.</p>
+                <button onclick="resetAllFilters()" class="bg-amber-400 hover:bg-amber-300 text-gray-950 font-extrabold text-sm px-5 py-2.5 rounded-xl transition">
+                    Shfaq të gjitha produktet
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-950 border-t border-white/10 mt-14">
+        <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-sm">
+            <div class="space-y-3">
+                <div class="inline-flex items-center gap-1 bg-amber-400 text-gray-950 font-black text-xl px-2.5 py-1 rounded-xl">
+                    <span>TECH</span>
+                    <span class="bg-gray-950 text-amber-400 px-1.5 rounded-md text-base">50</span>
+                </div>
+                <p class="text-gray-400 text-xs leading-relaxed">
+                    Platforma juaj e besuar për laptopë, telefona, komponentë PC, gaming dhe pajisje të zgjuara me dërgesë të shpejtë në tërë Kosovën.
+                </p>
+            </div>
+            <div class="space-y-2">
+                <h4 class="font-extrabold text-white text-xs uppercase tracking-wider">Kategori të Shpejta</h4>
+                <ul class="space-y-1.5 text-xs text-gray-400">
+                    <li><button onclick="selectCategory('Laptopë'); scrollToCatalog();" class="hover:text-amber-400 transition">Laptopë &amp; Ultrabook</button></li>
+                    <li><button onclick="selectCategory('Telefona'); scrollToCatalog();" class="hover:text-amber-400 transition">Telefona të Mençur</button></li>
+                    <li><button onclick="selectCategory('Gaming'); scrollToCatalog();" class="hover:text-amber-400 transition">Konzola &amp; Gaming Gear</button></li>
+                    <li><button onclick="selectCategory('PC & Komponentë'); scrollToCatalog();" class="hover:text-amber-400 transition">Kartela Grafike &amp; Komponentë</button></li>
+                </ul>
+            </div>
+            <div class="space-y-2">
+                <h4 class="font-extrabold text-white text-xs uppercase tracking-wider">Shërbimi ndaj Klientit</h4>
+                <ul class="space-y-1.5 text-xs text-gray-400">
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-truck text-amber-400 w-4"></i> Transport falas mbi €50</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-amber-400 w-4"></i> Garancion deri në 24 muaj</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-amber-400 w-4"></i> Prishtinë, Prizren, Pejë, Gjilan</li>
+                    <li class="flex items-center gap-2"><i class="fa-solid fa-envelope text-amber-400 w-4"></i> perkrahja@tech50-ks.com</li>
+                </ul>
+            </div>
+            <div class="space-y-2.5">
+                <h4 class="font-extrabold text-white text-xs uppercase tracking-wider">Kupon Promovues Aktiv</h4>
+                <div class="bg-gray-900 border border-amber-400/30 rounded-2xl p-3.5 space-y-2">
+                    <p class="text-xs text-gray-300">Përdor kodin në shportë për <strong class="text-amber-400">10% zbritje shtesë</strong>:</p>
+                    <div class="flex items-center justify-between bg-gray-950 border border-dashed border-amber-400/50 rounded-xl px-3 py-2">
+                        <span class="font-mono font-black text-amber-400 text-sm">KOSOVA10</span>
+                        <button onclick="copyPromoCode()" class="text-xs font-bold text-gray-300 hover:text-amber-400 transition flex items-center gap-1">
+                            <i class="fa-regular fa-copy"></i> Kopjo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/10 py-4 px-4 text-center text-xs text-gray-500">
+            © 2026 TECH50 Kosovë. Të gjitha të drejtat e rezervuara.
+        </div>
+    </footer>
+
+    <!-- ========================================================= -->
+    <!-- MODAL DETAJET E PRODUKTIT (QUICK-VIEW)                     -->
+    <!-- ========================================================= -->
+    <div id="quickViewModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" onclick="handleModalBackdropClick(event, 'quickViewModal')">
+        <div class="bg-gray-900 border border-white/15 rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl my-auto">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-gray-950/60">
+                <span id="qvCategoryBadge" class="text-xs font-extrabold uppercase tracking-wider text-amber-400">KATEGORIA</span>
+                <button onclick="closeQuickView()" aria-label="Mbyll dritaren" class="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/15 text-gray-300 hover:text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
+                <!-- Pamja Studio & Garancioni -->
+                <div class="md:col-span-5 flex flex-col justify-between space-y-4">
+                    <div id="qvPhotoContainer" class="studio-photo-box rounded-2xl p-4 border border-white/10 flex items-center justify-center min-h-[210px]"></div>
+                    <div class="bg-gray-950/80 border border-white/10 rounded-2xl p-3.5 space-y-2 text-xs text-gray-300">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-amber-400 w-4"></i>
+                            <span id="qvWarranty">Garancion: 24 muaj</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-truck-fast text-emerald-400 w-4"></i>
+                            <span>Dërgesë e shpejtë: 24–48 orë në Kosovë</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informacioni, Specifikimet & Veprimet -->
+                <div class="md:col-span-7 flex flex-col justify-between space-y-5">
+                    <div class="space-y-3">
+                        <h3 id="qvTitle" class="text-xl sm:text-2xl font-black text-white leading-snug"></h3>
+                        <p id="qvDesc" class="text-xs sm:text-sm text-gray-300 leading-relaxed"></p>
+
+                        <div class="flex items-baseline gap-3 pt-1">
+                            <span id="qvPrice" class="text-2xl sm:text-3xl font-black text-amber-400"></span>
+                            <span id="qvOldPrice" class="text-sm text-gray-500 line-through"></span>
+                            <span id="qvDiscountTag" class="bg-red-500/20 text-red-300 border border-red-500/30 text-xs font-extrabold px-2 py-0.5 rounded-lg"></span>
+                        </div>
+
+                        <!-- Tabela e Plotë e Specifikimeve Teknike -->
+                        <div class="pt-2">
+                            <h4 class="text-xs font-extrabold uppercase tracking-wider text-gray-400 mb-2">
+                                Specifikimet Teknike
+                            </h4>
+                            <div class="border border-white/10 rounded-2xl overflow-hidden bg-gray-950/60">
+                                <table class="w-full text-xs">
+                                    <tbody id="qvSpecsTable" class="divide-y divide-white/10"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 pt-2">
+                        <button id="qvAddToCartBtn" class="flex-1 bg-amber-400 hover:bg-amber-300 text-gray-950 font-black py-3.5 px-5 rounded-2xl text-sm shadow-lg shadow-amber-500/20 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>Shto në Shportë</span>
+                        </button>
+                        <button id="qvWishlistBtn" aria-label="Shto në të preferuara" class="w-12 h-12 rounded-2xl bg-gray-950 hover:bg-gray-800 border border-white/15 flex items-center justify-center text-base transition">
+                            <i class="fa-solid fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- SIRTARI ANËSOR I SHPORTËS (SLIDE-OVER CART DRAWER)        -->
+    <!-- ========================================================= -->
+    <div id="cartDrawerBackdrop" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-xs flex justify-end" onclick="handleModalBackdropClick(event, 'cartDrawerBackdrop')">
+        <aside class="w-full max-w-md bg-gray-900 border-l border-white/15 h-full flex flex-col justify-between shadow-2xl">
+            <!-- Header i Shportës -->
+            <div class="px-5 py-4 border-b border-white/10 bg-gray-950/70 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-cart-shopping text-amber-400 text-lg"></i>
+                    <h2 class="font-black text-white text-lg">Shporta Juaj</h2>
+                    <span id="drawerItemCount" class="bg-amber-400/15 text-amber-300 border border-amber-400/30 text-xs font-extrabold px-2 py-0.5 rounded-full">0</span>
+                </div>
+                <button onclick="closeCart()" aria-label="Mbyll shportën" class="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/15 text-gray-300 hover:text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Treguesi i Transportit Falas -->
+            <div class="px-5 py-3 bg-gray-950/40 border-b border-white/10 space-y-2">
+                <p id="freeShippingText" class="text-xs font-semibold text-gray-300"></p>
+                <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                    <div id="freeShippingBar" class="h-full bg-amber-400 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Lista e Produkteve në Shportë -->
+            <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-5 space-y-3.5"></div>
+
+            <!-- Përmbledhja, Kodi KOSOVA10 & Butoni i Porosisë -->
+            <div id="cartSummaryFooter" class="p-5 border-t border-white/10 bg-gray-950/80 space-y-4">
+                <!-- Kodi Promovues KOSOVA10 -->
+                <div class="space-y-1.5">
+                    <div class="flex gap-2">
+                        <input
+                            id="promoCodeInput"
+                            type="text"
+                            placeholder="Kodi i zbritjes (p.sh. KOSOVA10)"
+                            class="flex-1 bg-gray-900 border border-white/15 focus:border-amber-400 rounded-xl px-3 py-2 text-xs font-bold uppercase text-white placeholder-gray-500 focus:outline-none"
+                        >
+                        <button onclick="applyPromoCode()" class="bg-white/10 hover:bg-amber-400 hover:text-gray-950 text-white font-extrabold text-xs px-4 py-2 rounded-xl border border-white/10 transition">
+                            Apliko
+                        </button>
+                    </div>
+                    <p id="promoStatusMsg" class="text-xs hidden"></p>
+                </div>
+
+                <!-- Rreshtat e Llogaritjes -->
+                <div class="space-y-1.5 text-xs sm:text-sm">
+                    <div class="flex justify-between text-gray-400">
+                        <span>Nëntotali</span>
+                        <span id="cartSubtotal" class="font-bold text-white">€0.00</span>
+                    </div>
+                    <div id="promoDiscountRow" class="hidden flex justify-between text-emerald-400 font-semibold">
+                        <span>Zbritja (KOSOVA10 -10%)</span>
+                        <span id="cartDiscountAmount">-€0.00</span>
+                    </div>
+                    <div class="flex justify-between text-gray-400">
+                        <span>Transporti në Kosovë</span>
+                        <span id="cartShippingCost" class="font-bold text-amber-400">€3.50</span>
+                    </div>
+                    <div class="flex justify-between text-base font-black text-white pt-2 border-t border-white/10">
+                        <span>Totali për pagesë</span>
+                        <span id="cartGrandTotal" class="text-amber-400 text-lg">€0.00</span>
+                    </div>
+                </div>
+
+                <button id="openCheckoutBtn" onclick="openCheckoutModal()" disabled class="w-full disabled:opacity-40 disabled:cursor-not-allowed bg-amber-400 hover:bg-amber-300 text-gray-950 font-black py-3.5 rounded-2xl text-sm shadow-lg shadow-amber-500/20 transition flex items-center justify-center gap-2">
+                    <span>Vazhdo me Porosinë</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL POROSIA PËR KOSOVËN (CHECKOUT)                      -->
+    <!-- ========================================================= -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" onclick="handleModalBackdropClick(event, 'checkoutModal')">
+        <div class="bg-gray-900 border border-white/15 rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl my-auto">
+            <div class="px-6 py-4 border-b border-white/10 bg-gray-950/70 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-bag-shopping text-amber-400"></i>
+                    <h3 class="font-black text-white text-lg">Përfundo Porosinë — Kosovë</h3>
+                </div>
+                <button onclick="closeCheckoutModal()" aria-label="Mbyll formularin e porosisë" class="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/15 text-gray-300 hover:text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Formulari i Porosisë -->
+            <form id="checkoutForm" onsubmit="submitKosovoOrder(event)" class="p-6 space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-1.5">Emri dhe Mbiemri *</label>
+                        <input id="custName" type="text" required placeholder="p.sh. Arben Krasniqi" class="w-full bg-gray-950 border border-white/15 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-1.5">Numri i Telefonit *</label>
+                        <input id="custPhone" type="tel" required placeholder="+383 44 123 456" class="w-full bg-gray-950 border border-white/15 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-1.5">Qyteti në Kosovë *</label>
+                        <select id="custCity" required class="w-full bg-gray-950 border border-white/15 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="">Zgjedh qytetin...</option>
+                            <option value="Prishtinë">Prishtinë</option>
+                            <option value="Prizren">Prizren</option>
+                            <option value="Pejë">Pejë</option>
+                            <option value="Gjilan">Gjilan</option>
+                            <option value="Mitrovicë">Mitrovicë</option>
+                            <option value="Gjakovë">Gjakovë</option>
+                            <option value="Ferizaj">Ferizaj</option>
+                            <option value="Podujevë">Podujevë</option>
+                            <option value="Vushtrri">Vushtrri</option>
+                            <option value="Suharekë">Suharekë</option>
+                            <option value="Rahovec">Rahovec</option>
+                            <option value="Lipjan">Lipjan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-1.5">Mënyra e Pagesës</label>
+                        <select id="custPayment" class="w-full bg-gray-950 border border-white/15 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none cursor-pointer">
+                            <option value="Para në dorë (Cash / POS)">Para në dorë (Cash / POS)</option>
+                            <option value="Kartelë bankare (Visa / Mastercard)">Kartelë bankare (Visa / Mastercard)</option>
+                            <option value="Transfer bankar">Transfer bankar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 mb-1.5">Adresa e Saktë (Rruga, Nr. / Lagjja) *</label>
+                    <input id="custAddress" type="text" required placeholder="p.sh. Rruga B, Ndërtesa 14, Kati 3" class="w-full bg-gray-950 border border-white/15 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none">
+                </div>
+
+                <!-- Përmbledhja e Shkurtër e Totalit -->
+                <div class="bg-gray-950 border border-white/10 rounded-2xl p-3.5 flex items-center justify-between">
+                    <span class="text-xs font-bold text-gray-400">Totali përfundimtar:</span>
+                    <span id="checkoutTotalDisplay" class="text-lg font-black text-amber-400">€0.00</span>
+                </div>
+
+                <button type="submit" class="w-full bg-amber-400 hover:bg-amber-300 text-gray-950 font-black py-3.5 rounded-2xl text-sm shadow-lg shadow-amber-500/20 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Konfirmo Porosinë</span>
+                </button>
+            </form>
+
+            <!-- Konfirmimi i Porosisë -->
+            <div id="orderConfirmationBox" class="hidden p-7 text-center space-y-4">
+                <div class="w-16 h-16 rounded-2xl bg-emerald-500/15 border border-emerald-400/40 text-emerald-400 flex items-center justify-center text-3xl mx-auto">
+                    <i class="fa-solid fa-check-double"></i>
+                </div>
+                <div class="space-y-1">
+                    <h4 class="text-xl font-black text-white">Porosia u konfirmua me sukses!</h4>
+                    <p class="text-xs sm:text-sm text-gray-400">Faleminderit që zgjodhët <strong class="text-amber-400">TECH50</strong>. Ekipi ynë po përgatit dërgesën tuaj.</p>
+                </div>
+                <div id="orderReceiptDetails" class="bg-gray-950 border border-white/10 rounded-2xl p-4 text-left text-xs text-gray-300 space-y-1.5"></div>
+                <button onclick="finishOrderAndClose()" class="w-full bg-amber-400 hover:bg-amber-300 text-gray-950 font-black py-3 rounded-2xl text-sm transition">
+                    Vazhdo Blerjet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================
+        // 1. BAZA E TË DHËNAVE TË PRODUKTEVE NË SHQIP
+        // =========================================================
+        const PRODUCTS = [
+            {
+                id: 1,
+                title: "ASUS ROG Strix G16 i7-14650HX / RTX 4070",
+                category: "Gaming",
+                secondaryCategory: "Laptopë",
+                price: 1449.00,
+                oldPrice: 1799.00,
+                isFlashDeal: true,
+                stockLeft: 4,
+                totalStock: 15,
+                warranty: "Garancion 24 muaj (ASUS Kosovë)",
+                photoType: "laptop",
+                accent: "#F59E0B",
+                description: "Laptop gaming me shasi hibride alumini dhe polimeri mat, ekran QHD+ 240Hz dhe sistem ftohjeje me tre ventilatorë për performancë të qëndrueshme.",
+                specs: {
+                    "Procesori": "Intel Core i7-14650HX (16 bërthama, deri 5.2 GHz)",
+                    "Grafika": "NVIDIA GeForce RTX 4070 8GB GDDR6",
+                    "RAM & SSD": "32GB DDR5 4800MHz / 1TB PCIe 4.0 NVMe SSD",
+                    "Ekrani": "16\" WQXGA (2560x1600) IPS, 240Hz, 100% DCI-P3",
+                    "Pesha": "2.50 kg"
+                }
+            },
+            {
+                id: 2,
+                title: "Apple iPhone 16 Pro 256GB Desert Titanium",
+                category: "Telefona",
+                secondaryCategory: "Smart & Aksesorë",
+                price: 1189.00,
+                oldPrice: 1299.00,
+                isFlashDeal: true,
+                stockLeft: 3,
+                totalStock: 12,
+                warranty: "Garancion 24 muaj i plotë",
+                photoType: "phone",
+                accent: "#FBBF24",
+                description: "Telefon i avancuar me kornizë titani Grade 5, xham mbrojtës Ceramic Shield të gjeneratës së fundit, çip A18 Pro dhe sistem kamerash Pro 48MP.",
+                specs: {
+                    "Procesori": "Apple A18 Pro (3nm, 6-core CPU & GPU)",
+                    "Ekrani": "6.3\" Super Retina XDR OLED, ProMotion 120Hz",
+                    "Kamerat": "48MP Main + 48MP Ultra Wide + 12MP 5x Telephoto",
+                    "Memorja": "256GB NVMe Storage • Wi-Fi 7 • USB-C",
+                    "Rezistenca": "IP68 (deri 6m për 30 minuta)"
+                }
+            },
+            {
+                id: 3,
+                title: "Sony PlayStation 5 Slim 1TB + DualSense",
+                category: "Gaming",
+                secondaryCategory: "Smart & Aksesorë",
+                price: 489.00,
+                oldPrice: 549.00,
+                isFlashDeal: false,
+                stockLeft: 7,
+                totalStock: 20,
+                warranty: "Garancion 12 muaj",
+                photoType: "console",
+                accent: "#38BDF8",
+                description: "Konsola kompakte PS5 Slim me SSD 1TB të integruar, mbështetje 4K 120fps, Ray Tracing dhe kontrollues DualSense me feedback haptik.",
+                specs: {
+                    "Kapaciteti": "1TB Ultra-High-Speed SSD",
+                    "Rezolute": "Deri në 4K UHD / 120Hz HDR",
+                    "Audio": "Tempest 3D AudioTech",
+                    "Përfshin": "Konsola PS5 Slim + 1x Kontrollues DualSense + Kabllo",
+                    "Lidhshmëria": "HDMI 2.1, Wi-Fi 6, Bluetooth 5.1"
+                }
+            },
+            {
+                id: 4,
+                title: "Samsung OLED S90D 55\" 4K Smart TV 144Hz",
+                category: "TV & Foto",
+                secondaryCategory: "Gaming",
+                price: 1049.00,
+                oldPrice: 1299.00,
+                isFlashDeal: true,
+                stockLeft: 2,
+                totalStock: 10,
+                warranty: "Garancion 24 muaj",
+                photoType: "tv",
+                accent: "#F59E0B",
+                description: "Televizor OLED me profil ultra të hollë, ngjyra të certifikuara Pantone, HDR10+ dhe rifreskim deri në 144Hz për film dhe gaming.",
+                specs: {
+                    "Paneli": "55\" 4K UHD (3840x2160) Self-lit OLED, 144Hz",
+                    "Procesori": "NQ4 AI Gen2 Processor",
+                    "HDR": "OLED HDR+, HDR10+, HLG",
+                    "Smart TV": "Tizen OS • Wi-Fi • Bluetooth • 4x HDMI 2.1",
+                    "Audio": "40W 2.1ch me Dolby Atmos"
+                }
+            },
+            {
+                id: 5,
+                title: "Gigabyte GeForce RTX 4080 Super EAGLE OC 16GB",
+                category: "PC & Komponentë",
+                secondaryCategory: "Gaming",
+                price: 1099.00,
+                oldPrice: 1340.00,
+                isFlashDeal: true,
+                stockLeft: 5,
+                totalStock: 14,
+                warranty: "Garancion 24 muaj",
+                photoType: "gpu",
+                accent: "#F59E0B",
+                description: "Kartelë grafike me shasi metalike dhe ftohje WINDFORCE me tre ventilatorë, 16GB GDDR6X dhe mbështetje DLSS 3.5 për 4K ultra.",
+                specs: {
+                    "Memoria": "16GB GDDR6X (256-bit, 23 Gbps)",
+                    "CUDA Cores": "10,240 bërthama",
+                    "Daljet": "3x DisplayPort 1.4a, 1x HDMI 2.1a",
+                    "Ftohja": "3x 100mm WINDFORCE Fans + Vapor Chamber",
+                    "Ushqimi i rekomanduar": "750W PSU (1x 16-pin)"
+                }
+            },
+            {
+                id: 6,
+                title: "Logitech MX Master 3S Wireless Graphite",
+                category: "Smart & Aksesorë",
+                secondaryCategory: "PC & Komponentë",
+                price: 99.00,
+                oldPrice: 119.00,
+                isFlashDeal: false,
+                stockLeft: 12,
+                totalStock: 25,
+                warranty: "Garancion 24 muaj",
+                photoType: "mouse",
+                accent: "#FBBF24",
+                description: "Maus ergonomik me sipërfaqe mat të butë, sensor 8000 DPI që punon edhe mbi xham, klikime të qeta dhe rrotë elektromagnetike MagSpeed.",
+                specs: {
+                    "Sensori": "Darkfield High Precision, deri 8,000 DPI",
+                    "Lidhja": "Logi Bolt USB Receiver ose Bluetooth Low Energy",
+                    "Bateria": "Deri 70 ditë me karikim të plotë (USB-C)",
+                    "Butonat": "7 butona të personalizueshëm + Thumb wheel",
+                    "Kompatibiliteti": "Windows, macOS, Linux, iPadOS"
+                }
+            },
+            {
+                id: 7,
+                title: "Roborock Qrevo S Robot Vacuum & Mop",
+                category: "Smart & Aksesorë",
+                secondaryCategory: "TV & Foto",
+                price: 579.00,
+                oldPrice: 669.00,
+                isFlashDeal: false,
+                stockLeft: 6,
+                totalStock: 15,
+                warranty: "Garancion 24 muaj",
+                photoType: "smarthome",
+                accent: "#38BDF8",
+                description: "Pajisje e zgjuar për pastrim të automatizuar me navigim LiDAR, thithje 7,000Pa dhe stacion bazë për vetë-pastrim e mbushje uji.",
+                specs: {
+                    "Fuqia thithëse": "7,000Pa HyperForce",
+                    "Navigimi": "PreciSense LiDAR + hartëzim 3D në aplikacion",
+                    "Larja": "Dy mop rrotullues me ngritje automatike 10mm",
+                    "Bateria": "5,200 mAh (deri 180 minuta)",
+                    "Kontrolli": "Aplikacioni Roborock, Alexa, Google Home"
+                }
+            },
+            {
+                id: 8,
+                title: "AMD Ryzen 7 7800X3D 8-Core / 16-Thread",
+                category: "PC & Komponentë",
+                secondaryCategory: "Gaming",
+                price: 419.00,
+                oldPrice: 469.00,
+                isFlashDeal: false,
+                stockLeft: 8,
+                totalStock: 18,
+                warranty: "Garancion 24 muaj",
+                photoType: "cpu",
+                accent: "#F59E0B",
+                description: "Procesor me teknologji 3D V-Cache dhe 104MB cache totale, i krijuar për framerate maksimale dhe efiçiencë të lartë energjetike.",
+                specs: {
+                    "Bërthamat / Fijet": "8 bërthama / 16 fije (Zen 4)",
+                    "Frekuenca": "Deri në 5.0 GHz Boost",
+                    "Cache Totale": "104MB (L2 + L3 me 3D V-Cache)",
+                    "Socket": "AM5 (DDR5 & PCIe 5.0)",
+                    "TDP": "120W"
+                }
+            },
+            {
+                id: 9,
+                title: "Sony WH-1000XM5 Wireless Noise Cancelling",
+                category: "Audio",
+                secondaryCategory: "Smart & Aksesorë",
+                price: 329.00,
+                oldPrice: 389.00,
+                isFlashDeal: false,
+                stockLeft: 9,
+                totalStock: 20,
+                warranty: "Garancion 24 muaj",
+                photoType: "headphones",
+                accent: "#FBBF24",
+                description: "Kufje premium me anulim aktiv të zhurmës me tetë mikrofona, dizajn të lehtë me lëkurë sintetike të butë dhe audio Hi-Res Wireless.",
+                specs: {
+                    "Anulimi i zhurmës": "Dual Processor V1 + QN1 (8 mikrofona)",
+                    "Autonomia": "Deri 30 orë me ANC aktiv (3 min = 3 orë)",
+                    "Audio": "LDAC, AAC, SBC • 30mm driver karboni",
+                    "Lidhja": "Bluetooth 5.2 Multipoint + kabllo 3.5mm",
+                    "Pesha": "250 g"
+                }
+            },
+            {
+                id: 10,
+                title: "Keychron Q1 Pro Wireless Custom Mechanical",
+                category: "Gaming",
+                secondaryCategory: "PC & Komponentë",
+                price: 189.00,
+                oldPrice: 215.00,
+                isFlashDeal: false,
+                stockLeft: 11,
+                totalStock: 22,
+                warranty: "Garancion 12 muaj",
+                photoType: "keyboard",
+                accent: "#F59E0B",
+                description: "Tastierë mekanike 75% me trup të punuar nga alumini CNC, montim gasket, switch hot-swappable dhe mbështetje QMK/VIA.",
+                specs: {
+                    "Format": "75% Layout (82 çelësa) + Knob metalik",
+                    "Trupi": "Alumin CNC 6063 me Double-Gasket mount",
+                    "Lidhja": "Bluetooth 5.1 (deri 3 pajisje) ose USB-C Wired",
+                    "Keycaps": "Double-shot PBT",
+                    "Ndriçimi": "South-facing RGB LED"
+                }
+            }
+        ];
+
+        // =========================================================
+        // 2. GJENDJA E APLIKACIONIT (STATE)
+        // =========================================================
+        const FREE_SHIPPING_THRESHOLD = 50;
+        const STANDARD_SHIPPING_FEE = 3.50;
+        const PROMO_CODE_VALID = "KOSOVA10";
+        const PROMO_DISCOUNT_RATE = 0.10;
+
+        let state = {
+            selectedCategory: "Të gjitha",
+            searchQuery: "",
+            onlyWishlist: false,
+            cart: [
+                { productId: 6, qty: 1 }
+            ],
+            wishlist: [1, 2],
+            promoApplied: false,
+            heroSlideIndex: 0,
+            countdownSeconds: (5 * 3600) + (42 * 60) + 19
+        };
+
+        // =========================================================
+        // 3. RENDERIMI I PAMJEVE REALE TË STILIT STUDIO (SVG)
+        // =========================================================
+        function renderStudioPhoto(type, accent = "#F59E0B", heightClass = "h-36 sm:h-40") {
+            switch (type) {
+                case "laptop":
+                    return `<svg viewBox="0 0 240 165" class="w-full ${heightClass} object-cover rounded-xl studio-photo transition-transform duration-300">
+                        <defs>
+                            <linearGradient id="stLapBg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#070A12"/>
+                            </linearGradient>
+                            <linearGradient id="stLapScr" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#0F172A"/>
+                                <stop offset="60%" stop-color="#334155"/>
+                                <stop offset="100%" stop-color="${accent}"/>
+                            </linearGradient>
+                            <linearGradient id="stLapMetal" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#CBD5E1"/>
+                                <stop offset="45%" stop-color="#475569"/>
+                                <stop offset="100%" stop-color="#0F172A"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="240" height="165" fill="url(#stLapBg)"/>
+                        <ellipse cx="120" cy="140" rx="86" ry="11" fill="#000000" opacity="0.55"/>
+                        <rect x="46" y="20" width="148" height="94" rx="6" fill="#1E293B" stroke="#64748B" stroke-width="1.2"/>
+                        <rect x="52" y="26" width="136" height="82" rx="3" fill="url(#stLapScr)"/>
+                        <polygon points="52,26 112,26 74,108 52,108" fill="#FFFFFF" opacity="0.1"/>
+                        <rect x="64" y="40" width="48" height="5" rx="2" fill="#FFFFFF" opacity="0.8"/>
+                        <rect x="64" y="50" width="30" height="3.5" rx="1.75" fill="#FFFFFF" opacity="0.45"/>
+                        <circle cx="154" cy="68" r="18" fill="#FFFFFF" opacity="0.15"/>
+                        <path d="M46 114 L194 114 L214 132 C216 134 214 136 210 136 L30 136 C26 136 24 134 26 132 Z" fill="url(#stLapMetal)"/>
+                        <path d="M60 117 L180 117 L188 125 L52 125 Z" fill="#090D16"/>
+                        <rect x="102" y="127" width="36" height="5.5" rx="1.5" fill="#64748B" opacity="0.7"/>
+                    </svg>`;
+
+                case "phone":
+                    return `<svg viewBox="0 0 240 165" class="w-full ${heightClass} object-cover rounded-xl studio-photo transition-transform duration-300">
+                        <defs>
+                            <linearGradient id="stPhBg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#070A12"/>
+                            </linearGradient>
+                            <linearGradient id="stPhTi" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#E7E5E4"/>
+                                <stop offset="50%" stop-color="#78716C"/>
+                                <stop offset="100%" stop-color="#292524"/>
+                            </linearGradient>
+                            <linearGradient id="stPhScr" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#0F172A"/>
+                                <stop offset="65%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="${accent}"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="240" height="165" fill="url(#stPhBg)"/>
+                        <ellipse cx="120" cy="148" rx="44" ry="8" fill="#000000" opacity="0.55"/>
+                        <rect x="85" y="14" width="70" height="130" rx="12" fill="url(#stPhTi)" stroke="#F5F5F4" stroke-width="1.1"/>
+                        <rect x="88.5" y="17.5" width="63" height="123" rx="9.5" fill="url(#stPhScr)"/>
+                        <rect x="108" y="22.5" width="24" height="5.5" rx="2.75" fill="#090A0F"/>
+                        <polygon points="88.5,17.5 124,17.5 96,140.5 88.5,140.5" fill="#FFFFFF" opacity="0.1"/>
+                        <rect x="97" y="42" width="11" height="11" rx="2.5" fill="#FFFFFF" opacity="0.22"/>
+                        <rect x="114.5" y="42" width="11" height="11" rx="2.5" fill="${accent}" opacity="0.8"/>
+                        <rect x="132" y="42" width="11" height="11" rx="2.5" fill="#FFFFFF" opacity="0.22"/>
+                        <rect x="106" y="134" width="28" height="2.2" rx="1.1" fill="#FFFFFF" opacity="0.75"/>
+                    </svg>`;
+
+                case "console":
+                    return `<svg viewBox="0 0 240 165" class="w-full ${heightClass} object-cover rounded-xl studio-photo transition-transform duration-300">
+                        <defs>
+                            <linearGradient id="stCoBg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#070A12"/>
+                            </linearGradient>
+                            <linearGradient id="stCoSh" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#FFFFFF"/>
+                                <stop offset="75%" stop-color="#E2E8F0"/>
+                                <stop offset="100%" stop-color="#94A3B8"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="240" height="165" fill="url(#stCoBg)"/>
+                        <ellipse cx="116" cy="144" rx="52" ry="9" fill="#000000" opacity="0.55"/>
+                        <path d="M84 18 C106 14 122 18 126 28 L122 138 L82 134 Z" fill="url(#stCoSh)"/>
+                        <path d="M98 18 C110 16 119 19 122 27 L119 137 L96 135 Z" fill="#0F172A"/>
+                        <line x1="100" y1="28" x2="100" y2="108" stroke="${accent}" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M114 110 C107 110 101 124 103 136 C105 142 112 140 116 131 L146 131 C150 140 157 142 159 136 C161 124 155 110 148 110 Z" fill="#F8FAFC" stroke="#94A3B8" stroke-width="0.9"/>
+                        <circle cx="151" cy="117" r="1.8" fill="#38BDF8"/>
+                        <circle cx="155" cy="121" r="1.8" fill="#F43F5E"/>
+                    </svg>`;
+
+                case "tv":
+                    return `<svg viewBox="0 0 240 165" class="w-full ${heightClass} object-cover rounded-xl studio-photo transition-transform duration-300">
+                        <defs>
+                            <linearGradient id="stTvBg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#070A12"/>
+                            </linearGradient>
+                            <linearGradient id="stTvScr" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#1E1B4B"/>
+                                <stop offset="55%" stop-color="#312E81"/>
+                                <stop offset="100%" stop-color="${accent}"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="240" height="165" fill="url(#stTvBg)"/>
+                        <ellipse cx="120" cy="144" rx="76" ry="8" fill="#000000" opacity="0.5"/>
+                        <rect x="34" y="22" width="172" height="98" rx="4" fill="#090D16" stroke="#475569" stroke-width="1.8"/>
+                        <rect x="38" y="26" width="164" height="90" fill="url(#stTvScr)"/>
+                        <circle cx="144" cy="70" r="24" fill="#FBBF24" opacity="0.72"/>
+                        <path d="M38 98 L92 68 L134 94 L168 74 L202 92 L202 116 L38 116 Z" fill="#090D16" opacity="0.82"/>
+                        <polygon points="38,26 96,26 62,116 38,116" fill="#FFFFFF" opacity="0.09"/>
+                        <path d="M70 120 L60 138 M170 120 L180 138" stroke="#64748B" stroke-width="3.5" stroke-linecap="round"/>
+                    </svg>`;
+
+                case "gpu":
+                    return `<svg viewBox="0 0 240 165" class="w-full ${heightClass} object-cover rounded-xl studio-photo transition-transform duration-300">
+                        <defs>
+                            <linearGradient id="stGpuBg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#070A12"/>
+                            </linearGradient>
+                            <linearGradient id="stGpuMe" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#64748B"/>
+                                <stop offset="45%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#090D16"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="240" height="165" fill="url(#stGpuBg)"/>
+                        <ellipse cx="122" cy="124" rx="84" ry="11" fill="#000000" opacity="0.55"/>
+                        <rect x="28" y="52" width="10" height="60" rx="2" fill="#94A3B8"/>
+                        <rect x="38" y="56" width="168" height="52" rx="6" fill="url(#stGpuMe)" stroke="#64748B" stroke-width="1.1"/>
+                        <rect x="46" y="59" width="152" height="2.5" rx="1.25" fill="${accent}"/>
+                        <circle cx="72" cy="84" r="17" fill="#090D16" stroke="#334155" stroke-width="1.4"/>
+                        <circle cx="72" cy="84" r="5.5" fill="#475569"/>
+                        <circle cx="122" cy="84" r="17" fill="#090D16" stroke="#334155" stroke-width="1.4"/>
+                        <circle cx="122" cy="84" r="5.5" fill="#475569"/>
+                        <circle cx="172" cy="84" r="17" fill="#090D16" stroke="#334155" stroke-width="1.4"/>
+                        <circle cx="172" cy="84" r="5.5" fill="#475569"/>
+                        <rect x="54" y="108" width="104" height="4.5" fill="#EAB308"/>
+                    </svg>`;
+
+                case "mouse":
+                    return `<svg viewBox="0 0 240 165" class="w-full ${heightClass} object-cover rounded-xl studio-photo transition-transform duration-300">
+                        <defs>
+                            <linearGradient id="stMoBg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#070A12"/>
+                            </linearGradient>
+                            <linearGradient id="stMoSh" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#475569"/>
+                                <stop offset="45%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#090D16"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="240" height="165" fill="url(#stMoBg)"/>
+                        <ellipse cx="120" cy="140" rx="34" ry="8" fill="#000000" opacity="0.55"/>
+                        <path d="M92 62 C92 28 148 28 148 62 L146 114 C146 132 94 132 94 114 Z" fill="url(#stMoSh)" stroke="#64748B" stroke-width="1.1"/>
+                        <line x1="120" y1="34" x2="120" y2="72" stroke="#475569" stroke-width="1.4"/>
+                        <rect x="116.5" y="46" width="7" height="17" rx="3.5" fill="#64748B" stroke="#94A3B8" stroke-width="0.7"/>
+                        <circle cx="120" cy="54.5" r="1.5" fill="${accent}"/>
+                    </svg>`;
+
+                case "smarthome":
+                    return `<svg viewBox="0 0 240 165" class="w-full ${heightClass} object-cover rounded-xl studio-photo transition-transform duration-300">
+                        <defs>
+                            <linearGradient id="stSmBg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#070A12"/>
+                            </linearGradient>
+                            <linearGradient id="stSmBo" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#334155"/>
+                                <stop offset="100%" stop-color="#090D16"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="240" height="165" fill="url(#stSmBg)"/>
+                        <ellipse cx="120" cy="130" rx="58" ry="11" fill="#000000" opacity="0.55"/>
+                        <ellipse cx="120" cy="92" rx="54" ry="30" fill="url(#stSmBo)" stroke="#64748B" stroke-width="1.1"/>
+                        <ellipse cx="120" cy="85" rx="52" ry="26" fill="#1E293B"/>
+                        <ellipse cx="120" cy="73" rx="16" ry="8.5" fill="#090D16" stroke="#94A3B8" stroke-width="1"/>
+                        <circle cx="120" cy="72" r="3" fill="${accent}"/>
+                        <circle cx="106" cy="92" r="2.2" fill="#E2E8F0"/>
+                        <circle cx="134" cy="92" r="2.2" fill="${accent}"/>
+                    </svg>`;
+
+                case "cpu":
+                    return `<svg viewBox="0 0 240 165" class="w-full ${heightClass} object-cover rounded-xl studio-photo transition-transform duration-300">
+                        <defs>
+                            <linearGradient id="stCpBg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#070A12"/>
+                            </linearGradient>
+                            <linearGradient id="stCpIh" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#E2E8F0"/>
+                                <stop offset="50%" stop-color="#94A3B8"/>
+                                <stop offset="100%" stop-color="#64748B"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="240" height="165" fill="url(#stCpBg)"/>
+                        <ellipse cx="120" cy="140" rx="46" ry="8" fill="#000000" opacity="0.5"/>
+                        <rect x="74" y="36" width="92" height="92" rx="6" fill="#1E293B" stroke="#64748B" stroke-width="1.1"/>
+                        <rect x="84" y="46" width="72" height="72" rx="4" fill="url(#stCpIh)" stroke="#F8FAFC" stroke-width="0.8"/>
+                        <rect x="98" y="60" width="44" height="44" rx="2" fill="#CBD5E1" stroke="#94A3B8" stroke-width="0.8"/>
+                        <circle cx="120" cy="82" r="6.5" fill="${accent}"/>
+                    </svg>`;
+
+                case "headphones":
+                    return `<svg viewBox="0 0 240 165" class="w-full ${heightClass} object-cover rounded-xl studio-photo transition-transform duration-300">
+                        <defs>
+                            <linearGradient id="stHpBg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#070A12"/>
+                            </linearGradient>
+                            <linearGradient id="stHpCu" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#334155"/>
+                                <stop offset="100%" stop-color="#090D16"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="240" height="165" fill="url(#stHpBg)"/>
+                        <ellipse cx="120" cy="142" rx="54" ry="8" fill="#000000" opacity="0.5"/>
+                        <path d="M76 90 C76 32 164 32 164 90" fill="none" stroke="#1E293B" stroke-width="8.5" stroke-linecap="round"/>
+                        <path d="M76 90 C76 34 164 34 164 90" fill="none" stroke="#64748B" stroke-width="1.8" stroke-linecap="round"/>
+                        <rect x="62" y="76" width="24" height="46" rx="11" fill="url(#stHpCu)" stroke="#64748B" stroke-width="1"/>
+                        <rect x="154" y="76" width="24" height="46" rx="11" fill="url(#stHpCu)" stroke="#64748B" stroke-width="1"/>
+                        <line x1="74" y1="86" x2="74" y2="112" stroke="${accent}" stroke-width="1.5"/>
+                        <line x1="166" y1="86" x2="166" y2="112" stroke="${accent}" stroke-width="1.5"/>
+                    </svg>`;
+
+                case "keyboard":
+                default:
+                    return `<svg viewBox="0 0 240 165" class="w-full ${heightClass} object-cover rounded-xl studio-photo transition-transform duration-300">
+                        <defs>
+                            <linearGradient id="stKbBg" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#1E293B"/>
+                                <stop offset="100%" stop-color="#070A12"/>
+                            </linearGradient>
+                            <linearGradient id="stKbAl" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#334155"/>
+                                <stop offset="100%" stop-color="#090D16"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="240" height="165" fill="url(#stKbBg)"/>
+                        <ellipse cx="120" cy="120" rx="90" ry="11" fill="#000000" opacity="0.55"/>
+                        <rect x="28" y="52" width="184" height="60" rx="8" fill="url(#stKbAl)" stroke="#64748B" stroke-width="1.1"/>
+                        <g fill="#1E293B" stroke="#475569" stroke-width="0.6">
+                            <rect x="36" y="60" width="12" height="10.5" rx="2"/>
+                            <rect x="51" y="60" width="12" height="10.5" rx="2"/>
+                            <rect x="66" y="60" width="12" height="10.5" rx="2"/>
+                            <rect x="81" y="60" width="12" height="10.5" rx="2"/>
+                            <rect x="96" y="60" width="12" height="10.5" rx="2"/>
+                            <rect x="111" y="60" width="12" height="10.5" rx="2"/>
+                            <rect x="126" y="60" width="12" height="10.5" rx="2"/>
+                            <rect x="141" y="60" width="12" height="10.5" rx="2"/>
+                            <rect x="156" y="60" width="12" height="10.5" rx="2"/>
+                            <rect x="171" y="60" width="32" height="10.5" rx="2"/>
+                            <rect x="36" y="74.5" width="16" height="10.5" rx="2"/>
+                            <rect x="55" y="74.5" width="12" height="10.5" rx="2"/>
+                            <rect x="70" y="74.5" width="12" height="10.5" rx="2"/>
+                            <rect x="85" y="74.5" width="12" height="10.5" rx="2"/>
+                            <rect x="100" y="74.5" width="12" height="10.5" rx="2"/>
+                            <rect x="115" y="74.5" width="12" height="10.5" rx="2"/>
+                            <rect x="130" y="74.5" width="12" height="10.5" rx="2"/>
+                            <rect x="145" y="74.5" width="12" height="10.5" rx="2"/>
+                            <rect x="160" y="74.5" width="43" height="10.5" rx="2"/>
+                        </g>
+                        <rect x="74" y="90" width="76" height="11.5" rx="2" fill="#0F172A" stroke="#64748B" stroke-width="0.7"/>
+                        <rect x="185" y="90" width="18" height="11.5" rx="2" fill="${accent}"/>
+                    </svg>`;
+            }
+        }
+
+        // =========================================================
+        // 4. FORMATIMI I ÇMIMIT & ZBRITJES
+        // =========================================================
+        function formatEuro(amount) {
+            return "€" + Number(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function getDiscountPercent(product) {
+            if (!product.oldPrice || product.oldPrice <= product.price) return 0;
+            return Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100);
+        }
+
+        // =========================================================
+        // 5. HERO SLIDER & KOHËMATËSI I OFERTAVE TË DITËS
+        // =========================================================
+        function setHeroSlide(index) {
+            state.heroSlideIndex = index;
+            document.querySelectorAll(".hero-slide").forEach((el, idx) => {
+                el.classList.toggle("hidden", idx !== index);
+            });
+            const dot0 = document.getElementById("heroDot0");
+            const dot1 = document.getElementById("heroDot1");
+            if (index === 0) {
+                dot0.className = "w-7 h-2 rounded-full bg-amber-400 transition-all";
+                dot1.className = "w-2.5 h-2 rounded-full bg-white/30 hover:bg-white/60 transition-all";
+            } else {
+                dot0.className = "w-2.5 h-2 rounded-full bg-white/30 hover:bg-white/60 transition-all";
+                dot1.className = "w-7 h-2 rounded-full bg-amber-400 transition-all";
+            }
+        }
+
+        function nextHeroSlide() {
+            setHeroSlide((state.heroSlideIndex + 1) % 2);
+        }
+
+        function prevHeroSlide() {
+            setHeroSlide((state.heroSlideIndex + 1) % 2);
+        }
+
+        function startCountdownTimer() {
+            const updateClock = () => {
+                if (state.countdownSeconds <= 0) {
+                    state.countdownSeconds = (6 * 3600) + (15 * 60);
+                }
+                const hrs = Math.floor(state.countdownSeconds / 3600);
+                const mins = Math.floor((state.countdownSeconds % 3600) / 60);
+                const secs = state.countdownSeconds % 60;
+
+                document.getElementById("timerHours").textContent = String(hrs).padStart(2, "0");
+                document.getElementById("timerMinutes").textContent = String(mins).padStart(2, "0");
+                document.getElementById("timerSeconds").textContent = String(secs).padStart(2, "0");
+                state.countdownSeconds--;
+            };
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        // =========================================================
+        // 6. RENDERIMI I OFERTAVE TË DITËS & KATALOGUT
+        // =========================================================
+        function renderFlashDeals() {
+            const grid = document.getElementById("flashDealsGrid");
+            const flashProducts = PRODUCTS.filter(p => p.isFlashDeal);
+
+            grid.innerHTML = flashProducts.map(product => {
+                const discount = getDiscountPercent(product);
+                const soldPercent = Math.min(95, Math.max(20, Math.round(((product.totalStock - product.stockLeft) / product.totalStock) * 100)));
+                const wished = state.wishlist.includes(product.id);
+
+                return `
+                <article class="product-card bg-gray-950/90 border border-white/10 hover:border-amber-400/60 rounded-2xl p-4 flex flex-col justify-between transition shadow-lg">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <span class="bg-amber-400 text-gray-950 text-[11px] font-black px-2.5 py-0.5 rounded-lg">-${discount}%</span>
+                            <button onclick="toggleWishlist(${product.id})" aria-label="Të preferuarat" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-sm transition ${wished ? 'text-rose-400' : 'text-gray-400 hover:text-rose-400'}">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>
+                        </div>
+
+                        <div onclick="openQuickView(${product.id})" class="cursor-pointer studio-photo-box rounded-xl p-2 border border-white/10 mb-3">
+                            ${renderStudioPhoto(product.photoType, product.accent, "h-32")}
+                        </div>
+
+                        <span class="text-[11px] font-bold text-amber-400/90 uppercase tracking-wider">${product.category}</span>
+                        <h3 onclick="openQuickView(${product.id})" class="cursor-pointer font-extrabold text-white text-sm leading-snug hover:text-amber-400 transition line-clamp-2 mt-0.5">
+                            ${product.title}
+                        </h3>
+                    </div>
+
+                    <div class="pt-3 space-y-3">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-lg font-black text-amber-400">${formatEuro(product.price)}</span>
+                            ${product.oldPrice ? `<span class="text-xs text-gray-500 line-through">${formatEuro(product.oldPrice)}</span>` : ""}
+                        </div>
+
+                        <!-- Treguesi i Stoku & Sasisë së Mbetur -->
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="text-gray-400 font-medium">Në stok: <strong class="text-amber-300">${product.stockLeft} copë</strong></span>
+                                <span class="text-gray-500 font-semibold">${soldPercent}% shitur</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-amber-500 to-amber-300 rounded-full" style="width: ${soldPercent}%"></div>
+                            </div>
+                        </div>
+
+                        <button onclick="addToCart(${product.id})" class="w-full bg-amber-400 hover:bg-amber-300 text-gray-950 font-extrabold py-2.5 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>Shto në Shportë</span>
+                        </button>
+                    </div>
+                </article>`;
+            }).join("");
+        }
+
+        function getFilteredAndSortedProducts() {
+            const q = state.searchQuery.trim().toLowerCase();
+            const sortBy = document.getElementById("sortSelect").value;
+
+            let list = PRODUCTS.filter(p => {
+                const matchesCat =
+                    state.selectedCategory === "Të gjitha" ||
+                    (state.selectedCategory === "Zbritje" && getDiscountPercent(p) > 0) ||
+                    p.category === state.selectedCategory ||
+                    p.secondaryCategory === state.selectedCategory;
+
+                const matchesWish = !state.onlyWishlist || state.wishlist.includes(p.id);
+
+                const matchesQuery =
+                    !q ||
+                    p.title.toLowerCase().includes(q) ||
+                    p.category.toLowerCase().includes(q) ||
+                    p.description.toLowerCase().includes(q) ||
+                    Object.values(p.specs).some(val => val.toLowerCase().includes(q));
+
+                return matchesCat && matchesWish && matchesQuery;
+            });
+
+            if (sortBy === "price-asc") {
+                list.sort((a, b) => a.price - b.price);
+            } else if (sortBy === "price-desc") {
+                list.sort((a, b) => b.price - a.price);
+            } else if (sortBy === "discount-desc") {
+                list.sort((a, b) => getDiscountPercent(b) - getDiscountPercent(a));
+            }
+
+            return list;
+        }
+
+        function renderCatalog() {
+            const grid = document.getElementById("catalogGrid");
+            const emptyState = document.getElementById("emptyCatalogState");
+            const heading = document.getElementById("catalogHeading");
+            const countBadge = document.getElementById("catalogCountBadge");
+
+            const filtered = getFilteredAndSortedProducts();
+            countBadge.textContent = filtered.length;
+
+            if (state.onlyWishlist) {
+                heading.textContent = "Produktet e preferuara";
+            } else if (state.selectedCategory === "Të gjitha") {
+                heading.textContent = "Të gjitha produktet";
+            } else {
+                heading.textContent = state.selectedCategory;
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = "";
+                emptyState.classList.remove("hidden");
+                return;
+            }
+
+            emptyState.classList.add("hidden");
+            grid.innerHTML = filtered.map(product => {
+                const discount = getDiscountPercent(product);
+                const wished = state.wishlist.includes(product.id);
+
+                return `
+                <article class="product-card bg-gray-900/90 border border-white/10 hover:border-amber-400/60 rounded-2xl p-4 flex flex-col justify-between transition shadow-lg">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <span class="text-[11px] font-bold text-gray-400 bg-white/5 px-2.5 py-0.5 rounded-lg">${product.category}</span>
+                            <div class="flex items-center gap-1.5">
+                                ${discount > 0 ? `<span class="bg-amber-400 text-gray-950 text-[11px] font-black px-2 py-0.5 rounded-lg">-${discount}%</span>` : ""}
+                                <button onclick="toggleWishlist(${product.id})" aria-label="Shto ose hiq nga të preferuarat" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-sm transition ${wished ? 'text-rose-400' : 'text-gray-400 hover:text-rose-400'}">
+                                    <i class="fa-solid fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div onclick="openQuickView(${product.id})" class="cursor-pointer studio-photo-box rounded-xl p-2.5 border border-white/10 mb-3">
+                            ${renderStudioPhoto(product.photoType, product.accent, "h-36")}
+                        </div>
+
+                        <h3 onclick="openQuickView(${product.id})" class="cursor-pointer font-extrabold text-white text-sm sm:text-base leading-snug hover:text-amber-400 transition line-clamp-2">
+                            ${product.title}
+                        </h3>
+                        <p class="text-xs text-gray-400 line-clamp-2 mt-1">${product.description}</p>
+                    </div>
+
+                    <div class="pt-4 mt-3 border-t border-white/10 space-y-3">
+                        <div class="flex items-baseline justify-between gap-2">
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-lg sm:text-xl font-black text-amber-400">${formatEuro(product.price)}</span>
+                                ${product.oldPrice ? `<span class="text-xs text-gray-500 line-through">${formatEuro(product.oldPrice)}</span>` : ""}
+                            </div>
+                            <span class="text-[11px] text-emerald-400 font-semibold">Në stok</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="addToCart(${product.id})" class="flex-1 bg-amber-400 hover:bg-amber-300 text-gray-950 font-extrabold py-2.5 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-cart-plus"></i>
+                                <span>Shto në Shportë</span>
+                            </button>
+                            <button onclick="openQuickView(${product.id})" title="Shiko specifikimet" class="bg-white/5 hover:bg-white/15 border border-white/10 text-gray-200 font-bold py-2.5 px-3 rounded-xl text-xs transition">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </article>`;
+            }).join("");
+        }
+
+        // =========================================================
+        // 7. KËRKIMI LIVE, KATEGORITË & TË PREFERUARAT
+        // =========================================================
+        function selectCategory(category) {
+            state.selectedCategory = category;
+            state.onlyWishlist = false;
+            updateWishlistNavButton();
+
+            document.querySelectorAll(".cat-nav-btn").forEach(btn => {
+                const isActive = btn.dataset.cat === category;
+                if (btn.dataset.cat === "Zbritje") {
+                    btn.className = isActive
+                        ? "cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-black bg-amber-400 text-gray-950 transition flex items-center gap-1.5"
+                        : "cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-extrabold text-amber-400 bg-amber-400/10 border border-amber-400/30 hover:bg-amber-400/20 transition flex items-center gap-1.5";
+                } else {
+                    btn.className = isActive
+                        ? "cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-amber-400 text-gray-950 transition"
+                        : "cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-gray-300 hover:text-amber-400 hover:bg-white/5 transition";
+                }
+            });
+
+            const searchCatSelect = document.getElementById("searchCategorySelect");
+            if (searchCatSelect) {
+                const exists = Array.from(searchCatSelect.options).some(opt => opt.value === category);
+                searchCatSelect.value = exists ? category : "Të gjitha";
+            }
+
+            renderCatalog();
+        }
+
+        function handleLiveSearch() {
+            const input = document.getElementById("liveSearchInput");
+            const clearBtn = document.getElementById("clearSearchBtn");
+            const catSelect = document.getElementById("searchCategorySelect");
+
+            state.searchQuery = input.value;
+            clearBtn.classList.toggle("hidden", input.value.trim().length === 0);
+
+            if (catSelect && catSelect.value !== "Të gjitha" && state.selectedCategory !== catSelect.value) {
+                state.selectedCategory = catSelect.value;
+                document.querySelectorAll(".cat-nav-btn").forEach(btn => {
+                    const active = btn.dataset.cat === state.selectedCategory;
+                    btn.className = active
+                        ? "cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-amber-400 text-gray-950 transition"
+                        : "cat-nav-btn shrink-0 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-gray-300 hover:text-amber-400 hover:bg-white/5 transition";
+                });
+            }
+
+            renderCatalog();
+        }
+
+        function clearSearch() {
+            const input = document.getElementById("liveSearchInput");
+            input.value = "";
+            state.searchQuery = "";
+            document.getElementById("clearSearchBtn").classList.add("hidden");
+            renderCatalog();
+        }
+
+        function toggleWishlist(productId) {
+            const idx = state.wishlist.indexOf(productId);
+            const product = PRODUCTS.find(p => p.id === productId);
+            if (idx === -1) {
+                state.wishlist.push(productId);
+                showToast(`"${product ? product.title : 'Produkti'}" u shtua te të preferuarat.`, "fa-heart");
+            } else {
+                state.wishlist.splice(idx, 1);
+                showToast("U hoq nga lista e të preferuarave.", "fa-heart-crack");
+            }
+            updateWishlistBadge();
+            renderFlashDeals();
+            renderCatalog();
+            syncQuickViewWishlistButton(productId);
+        }
+
+        function toggleWishlistFilter() {
+            state.onlyWishlist = !state.onlyWishlist;
+            updateWishlistNavButton();
+            renderCatalog();
+            scrollToCatalog();
+        }
+
+        function updateWishlistNavButton() {
+            const btn = document.getElementById("wishlistNavBtn");
+            if (state.onlyWishlist) {
+                btn.className = "relative flex items-center gap-2 bg-rose-500/20 border border-rose-400/50 text-rose-200 px-3 py-2.5 rounded-xl text-xs font-extrabold transition";
+            } else {
+                btn.className = "relative flex items-center gap-2 bg-gray-900 hover:bg-gray-800 border border-white/10 text-gray-200 px-3 py-2.5 rounded-xl text-xs font-bold transition";
+            }
+        }
+
+        function updateWishlistBadge() {
+            document.getElementById("wishlistBadge").textContent = state.wishlist.length;
+        }
+
+        function resetAllFilters() {
+            document.getElementById("liveSearchInput").value = "";
+            document.getElementById("searchCategorySelect").value = "Të gjitha";
+            document.getElementById("sortSelect").value = "featured";
+            document.getElementById("clearSearchBtn").classList.add("hidden");
+            state.searchQuery = "";
+            state.onlyWishlist = false;
+            selectCategory("Të gjitha");
+        }
+
+        function scrollToCatalog() {
+            document.getElementById("catalogSection").scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        // =========================================================
+        // 8. MODAL DETAJET E PRODUKTIT (QUICK-VIEW)
+        // =========================================================
+        function openQuickView(productId) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            if (!product) return;
+
+            const discount = getDiscountPercent(product);
+            document.getElementById("qvCategoryBadge").textContent = product.category;
+            document.getElementById("qvTitle").textContent = product.title;
+            document.getElementById("qvDesc").textContent = product.description;
+            document.getElementById("qvWarranty").textContent = product.warranty;
+            document.getElementById("qvPhotoContainer").innerHTML = renderStudioPhoto(product.photoType, product.accent, "h-44 sm:h-48");
+
+            document.getElementById("qvPrice").textContent = formatEuro(product.price);
+            const oldPriceEl = document.getElementById("qvOldPrice");
+            const discTagEl = document.getElementById("qvDiscountTag");
+
+            if (product.oldPrice && discount > 0) {
+                oldPriceEl.textContent = formatEuro(product.oldPrice);
+                oldPriceEl.classList.remove("hidden");
+                discTagEl.textContent = `-${discount}%`;
+                discTagEl.classList.remove("hidden");
+            } else {
+                oldPriceEl.classList.add("hidden");
+                discTagEl.classList.add("hidden");
+            }
+
+            const specsBody = document.getElementById("qvSpecsTable");
+            specsBody.innerHTML = Object.entries(product.specs).map(([key, val]) => `
+                <tr>
+                    <td class="px-3.5 py-2.5 font-bold text-gray-400 w-2/5">${key}</td>
+                    <td class="px-3.5 py-2.5 font-semibold text-white">${val}</td>
+                </tr>
+            `).join("");
+
+            const addBtn = document.getElementById("qvAddToCartBtn");
+            addBtn.onclick = () => {
+                addToCart(product.id);
+                closeQuickView();
+                openCart();
+            };
+
+            syncQuickViewWishlistButton(product.id);
+            document.getElementById("quickViewModal").classList.remove("hidden");
+        }
+
+        function syncQuickViewWishlistButton(productId) {
+            const wishBtn = document.getElementById("qvWishlistBtn");
+            if (!wishBtn) return;
+            const wished = state.wishlist.includes(productId);
+            wishBtn.className = `w-12 h-12 rounded-2xl border flex items-center justify-center text-base transition ${
+                wished
+                    ? "bg-rose-500/20 border-rose-400/50 text-rose-400"
+                    : "bg-gray-950 hover:bg-gray-800 border-white/15 text-gray-300 hover:text-rose-400"
+            }`;
+            wishBtn.onclick = () => toggleWishlist(productId);
+        }
+
+        function closeQuickView() {
+            document.getElementById("quickViewModal").classList.add("hidden");
+        }
+
+        // =========================================================
+        // 9. SHPORTA INTERAKTIVE, KODI KOSOVA10 & POROSIA
+        // =========================================================
+        function addToCart(productId) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            if (!product) return;
+
+            const existing = state.cart.find(item => item.productId === productId);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                state.cart.push({ productId, qty: 1 });
+            }
+
+            updateCartUI();
+            showToast(`"${product.title}" u shtua në shportë.`, "fa-cart-plus");
+        }
+
+        function changeCartQty(productId, delta) {
+            const item = state.cart.find(i => i.productId === productId);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                state.cart = state.cart.filter(i => i.productId !== productId);
+            }
+            updateCartUI();
+        }
+
+        function removeFromCart(productId) {
+            state.cart = state.cart.filter(i => i.productId !== productId);
+            updateCartUI();
+        }
+
+        function calculateCartTotals() {
+            let subtotal = 0;
+            let totalItems = 0;
+
+            state.cart.forEach(item => {
+                const product = PRODUCTS.find(p => p.id === item.productId);
+                if (product) {
+                    subtotal += product.price * item.qty;
+                    totalItems += item.qty;
+                }
+            });
+
+            const discountAmount = state.promoApplied ? subtotal * PROMO_DISCOUNT_RATE : 0;
+            const afterDiscount = Math.max(0, subtotal - discountAmount);
+            const isFreeShipping = afterDiscount >= FREE_SHIPPING_THRESHOLD || afterDiscount === 0;
+            const shippingCost = afterDiscount === 0 ? 0 : (isFreeShipping ? 0 : STANDARD_SHIPPING_FEE);
+            const grandTotal = afterDiscount + shippingCost;
+
+            return {
+                totalItems,
+                subtotal,
+                discountAmount,
+                afterDiscount,
+                isFreeShipping,
+                shippingCost,
+                grandTotal
+            };
+        }
+
+        function applyPromoCode() {
+            const input = document.getElementById("promoCodeInput");
+            const msg = document.getElementById("promoStatusMsg");
+            const code = input.value.trim().toUpperCase();
+
+            msg.classList.remove("hidden", "text-emerald-400", "text-rose-400");
+
+            if (code === PROMO_CODE_VALID) {
+                state.promoApplied = true;
+                msg.textContent = "Kodi KOSOVA10 u aplikua! Përfitoni 10% zbritje shtesë.";
+                msg.classList.add("text-emerald-400");
+            } else {
+                state.promoApplied = false;
+                msg.textContent = "Kod i pavlefshëm. Provo kodin KOSOVA10 për 10% zbritje.";
+                msg.classList.add("text-rose-400");
+            }
+            updateCartUI();
+        }
+
+        function copyPromoCode() {
+            const tempInput = document.createElement("input");
+            tempInput.value = PROMO_CODE_VALID;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand("copy");
+                showToast("Kodi KOSOVA10 u kopjua në memorie!", "fa-copy");
+            } catch (err) {
+                showToast("Kodi promovues: KOSOVA10", "fa-tag");
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        function updateCartUI() {
+            const totals = calculateCartTotals();
+
+            document.getElementById("cartCountBadge").textContent = totals.totalItems;
+            document.getElementById("drawerItemCount").textContent = totals.totalItems;
+
+            // Shiriti i transportit falas mbi €50
+            const shippingText = document.getElementById("freeShippingText");
+            const shippingBar = document.getElementById("freeShippingBar");
+
+            if (totals.afterDiscount === 0) {
+                shippingText.innerHTML = `Transport falas në Kosovë për porosi mbi <strong>€50.00</strong>.`;
+                shippingBar.style.width = "0%";
+            } else if (totals.afterDiscount >= FREE_SHIPPING_THRESHOLD) {
+                shippingText.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Urime! Keni përfituar transport falas në Kosovë.</span>`;
+                shippingBar.style.width = "100%";
+            } else {
+                const remaining = FREE_SHIPPING_THRESHOLD - totals.afterDiscount;
+                const pct = Math.min(100, Math.round((totals.afterDiscount / FREE_SHIPPING_THRESHOLD) * 100));
+                shippingText.innerHTML = `Shto edhe <strong class="text-amber-400">${formatEuro(remaining)}</strong> për <strong>transport falas</strong> në Kosovë.`;
+                shippingBar.style.width = `${pct}%`;
+            }
+
+            // Lista e artikujve
+            const container = document.getElementById("cartItemsContainer");
+            const checkoutBtn = document.getElementById("openCheckoutBtn");
+
+            if (state.cart.length === 0) {
+                checkoutBtn.disabled = true;
+                container.innerHTML = `
+                    <div class="text-center py-12 space-y-3">
+                        <div class="w-14 h-14 rounded-2xl bg-white/5 text-gray-500 flex items-center justify-center text-2xl mx-auto">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </div>
+                        <p class="font-bold text-white text-sm">Shporta juaj është e zbrazët</p>
+                        <p class="text-xs text-gray-400">Zgjidhni pajisjet tuaja të preferuara nga katalogu.</p>
+                    </div>`;
+            } else {
+                checkoutBtn.disabled = false;
+                container.innerHTML = state.cart.map(item => {
+                    const product = PRODUCTS.find(p => p.id === item.productId);
+                    if (!product) return "";
+                    return `
+                    <div class="bg-gray-950/90 border border-white/10 rounded-2xl p-3 flex items-center gap-3">
+                        <div class="w-20 h-16 rounded-xl overflow-hidden shrink-0 border border-white/10">
+                            ${renderStudioPhoto(product.photoType, product.accent, "h-16")}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-white text-xs sm:text-sm truncate">${product.title}</h4>
+                            <div class="text-xs font-black text-amber-400 mt-0.5">${formatEuro(product.price * item.qty)}</div>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button onclick="changeCartQty(${product.id}, -1)" aria-label="Zvogëlo sasinë" class="w-6 h-6 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center justify-center transition">-</button>
+                                <span class="text-xs font-extrabold text-white px-1">${item.qty}</span>
+                                <button onclick="changeCartQty(${product.id}, 1)" aria-label="Rrit sasinë" class="w-6 h-6 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center justify-center transition">+</button>
+                                <button onclick="removeFromCart(${product.id})" aria-label="Fshij produktin" class="ml-auto text-gray-500 hover:text-rose-400 text-xs transition">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join("");
+            }
+
+            // Totalet
+            document.getElementById("cartSubtotal").textContent = formatEuro(totals.subtotal);
+
+            const discountRow = document.getElementById("promoDiscountRow");
+            if (state.promoApplied && totals.discountAmount > 0) {
+                discountRow.classList.remove("hidden");
+                document.getElementById("cartDiscountAmount").textContent = `-${formatEuro(totals.discountAmount)}`;
+            } else {
+                discountRow.classList.add("hidden");
+            }
+
+            const shippingCostEl = document.getElementById("cartShippingCost");
+            if (totals.afterDiscount === 0) {
+                shippingCostEl.textContent = "€0.00";
+                shippingCostEl.className = "font-bold text-gray-400";
+            } else if (totals.isFreeShipping) {
+                shippingCostEl.textContent = "FALAS";
+                shippingCostEl.className = "font-black text-emerald-400";
+            } else {
+                shippingCostEl.textContent = formatEuro(totals.shippingCost);
+                shippingCostEl.className = "font-bold text-amber-400";
+            }
+
+            document.getElementById("cartGrandTotal").textContent = formatEuro(totals.grandTotal);
+            document.getElementById("checkoutTotalDisplay").textContent = formatEuro(totals.grandTotal);
+        }
+
+        function openCart() {
+            updateCartUI();
+            document.getElementById("cartDrawerBackdrop").classList.remove("hidden");
+        }
+
+        function closeCart() {
+            document.getElementById("cartDrawerBackdrop").classList.add("hidden");
+        }
+
+        function openCheckoutModal() {
+            if (state.cart.length === 0) return;
+            const totals = calculateCartTotals();
+            document.getElementById("checkoutTotalDisplay").textContent = formatEuro(totals.grandTotal);
+            document.getElementById("checkoutForm").classList.remove("hidden");
+            document.getElementById("orderConfirmationBox").classList.add("hidden");
+            closeCart();
+            document.getElementById("checkoutModal").classList.remove("hidden");
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById("checkoutModal").classList.add("hidden");
+        }
+
+        function submitKosovoOrder(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("custName").value.trim();
+            const phone = document.getElementById("custPhone").value.trim();
+            const city = document.getElementById("custCity").value;
+            const address = document.getElementById("custAddress").value.trim();
+            const payment = document.getElementById("custPayment").value;
+            const totals = calculateCartTotals();
+            const orderCode = "T50-" + Math.floor(100000 + Math.random() * 900000);
+
+            document.getElementById("orderReceiptDetails").innerHTML = `
+                <div><strong>Numri i porosisë:</strong> <span class="text-amber-400 font-mono">${orderCode}</span></div>
+                <div><strong>Klienti:</strong> ${name} (${phone})</div>
+                <div><strong>Qyteti &amp; Adresa:</strong> ${city}, ${address}</div>
+                <div><strong>Pagesa:</strong> ${payment}</div>
+                <div><strong>Totali:</strong> <span class="text-amber-400 font-black">${formatEuro(totals.grandTotal)}</span></div>
+            `;
+
+            document.getElementById("checkoutForm").classList.add("hidden");
+            document.getElementById("orderConfirmationBox").classList.remove("hidden");
+
+            // Pastro shportën dhe kodin pas konfirmimit
+            state.cart = [];
+            state.promoApplied = false;
+            document.getElementById("promoCodeInput").value = "";
+            document.getElementById("promoStatusMsg").classList.add("hidden");
+            updateCartUI();
+        }
+
+        function finishOrderAndClose() {
+            document.getElementById("checkoutForm").reset();
+            closeCheckoutModal();
+            showToast("Porosia juaj u regjistrua. Faleminderit!", "fa-circle-check");
+        }
+
+        function handleModalBackdropClick(event, elementId) {
+            if (event.target && event.target.id === elementId) {
+                document.getElementById(elementId).classList.add("hidden");
+            }
+        }
+
+        // =========================================================
+        // 10. NJOFTIMET TOAST & INICIALIZIMI
+        // =========================================================
+        let toastTimeout = null;
+        function showToast(message, iconClass = "fa-check") {
+            const banner = document.getElementById("toastBanner");
+            const msgEl = document.getElementById("toastMessage");
+            const iconEl = document.getElementById("toastIcon");
+
+            msgEl.textContent = message;
+            iconEl.className = `fa-solid ${iconClass}`;
+            banner.classList.remove("hidden");
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                banner.classList.add("hidden");
+            }, 2800);
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            startCountdownTimer();
+            renderFlashDeals();
+            renderCatalog();
+            updateWishlistBadge();
+            updateCartUI();
+        });
+    </script>
+</body>
+</html>
